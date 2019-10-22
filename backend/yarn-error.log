@@ -1,0 +1,52 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\04.000284\scoop\apps\yarn\current\Yarn\bin\yarn.js add moongose
+
+PATH: 
+  C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Program Files\AdoptOpenJDK\jdk-8.0.222.10-hotspot\bin;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\PuTTY\;C:\Program Files\Git\cmd;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files\nodejs\;C:\opt\apache-maven-3.6.1\bin;C:\Users\04.000284\scoop\apps\yarn\current\Yarn\bin;C:\Users\04.000284\scoop\apps\yarn\current\global\node_modules\.bin;C:\Users\04.000284\scoop\apps\nodejs\current\bin;C:\Users\04.000284\scoop\apps\nodejs\current;C:\Users\04.000284\scoop\shims;C:\Users\04.000284\anaconda3;C:\Users\04.000284\anaconda3\Library\mingw-w64\bin;C:\Users\04.000284\anaconda3\Library\usr\bin;C:\Users\04.000284\anaconda3\Library\bin;C:\Users\04.000284\anaconda3\Scripts;C:\Users\04.000284\AppData\Local\Microsoft\WindowsApps;C:\Users\04.000284\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\JetBrains\PyCharm Community Edition 2019.1.3\bin;C:\Users\04.000284\AppData\Roaming\npm;C:\Users\04.000284\AppData\Local\Programs\Microsoft VS Code Insiders\bin
+
+Yarn version: 
+  1.19.0
+
+Node version: 
+  10.16.3
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/moongose: Not found
+      at Request.params.callback [as _callback] (C:\Users\04.000284\scoop\apps\yarn\1.19.0\Yarn\lib\cli.js:66027:18)
+      at Request.self.callback (C:\Users\04.000284\scoop\apps\yarn\1.19.0\Yarn\lib\cli.js:140539:22)
+      at Request.emit (events.js:198:13)
+      at Request.<anonymous> (C:\Users\04.000284\scoop\apps\yarn\1.19.0\Yarn\lib\cli.js:141511:10)
+      at Request.emit (events.js:198:13)
+      at IncomingMessage.<anonymous> (C:\Users\04.000284\scoop\apps\yarn\1.19.0\Yarn\lib\cli.js:141433:12)
+      at Object.onceWrapper (events.js:286:20)
+      at IncomingMessage.emit (events.js:203:15)
+      at endReadableNT (_stream_readable.js:1145:12)
+      at process._tickCallback (internal/process/next_tick.js:63:19)
+
+npm manifest: 
+  {
+    "name": "backend",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "scripts": {
+      "dev": "nodemon src/server.js"
+    },
+    "dependencies": {
+      "express": "^4.17.1",
+      "mongoose": "^5.7.3",
+      "multer": "^1.4.2"
+    },
+    "devDependencies": {
+      "nodemon": "^1.19.3"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
