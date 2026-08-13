@@ -1,21 +1,22 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../../services/api'
 
 import camera from '../../assets/camera.svg'
 
 import './styles.css';
 
-export default function New({ history }){
+export default function New(){
     const [thumbnail, setThumbnail ] = useState(null);
     const [ company, setCompany ] = useState('');
     const [ techs, setTechs ] = useState('');
     const [ price, setPrice ] = useState('');
-    
+    const navigate = useNavigate();
 
     const preview = useMemo(() => {
         return thumbnail ? URL.createObjectURL(thumbnail) : null;
     }, [thumbnail])
-    
+
     async function hundleSubmit(event){
         event.preventDefault();
 
@@ -31,7 +32,7 @@ export default function New({ history }){
             headers: { user_id }
         })
 
-        history.push('/dashboards')
+        navigate('/dashboards')
     }
     
     return (

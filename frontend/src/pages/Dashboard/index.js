@@ -10,19 +10,20 @@ export default function Dashboard(){
     const [requests, setRequests] = useState([]);
 
     const user_id = localStorage.getItem('user');
-    const socket = useMemo(() => socketio('http://10.140.91.15:3333', {
+    const socket = useMemo(() => socketio(process.env.REACT_APP_SOCKET_URL || 'http://localhost:3333', {
         query: { user_id },
     }), [user_id]);
 
     useEffect(() => {
         socket.on('booking_request', data => {
-            setRequests([...requests, data]);
+            setRequests(prevRequests => [...prevRequests, data]);
         });
-    }, [requests, socket]);
+
+        return () => socket.off('booking_request');
+    }, [socket]);
 
     useEffect(() => {
         async function loadSpots() {
-            const user_id = localStorage.getItem('user');
             const response = await api.get('/dashboards', {
                 headers: { user_id }
             });
@@ -30,18 +31,22 @@ export default function Dashboard(){
             setSpots(response.data)
         }
         loadSpots();
-    }, []);
+    }, [user_id]);
 
     async function handleAccept(id){
-        await api.post(`/bookings/${id}/approvals`);
+        await api.post(`/bookings/${id}/approvals`, null, {
+            headers: { user_id }
+        });
 
-        setRequests(requests.filter(request => request._id != id));
+        setRequests(requests.filter(request => request._id !== id));
     };
 
     async function handleReject(id){
-        await api.post(`/bookings/${id}/rejections`);
+        await api.post(`/bookings/${id}/rejections`, null, {
+            headers: { user_id }
+        });
 
-        setRequests(requests.filter(request => request._id != id));
+        setRequests(requests.filter(request => request._id !== id));
     };
 
     return (

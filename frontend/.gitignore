@@ -4,3 +4,11 @@
 /node_modules
 
 yarn-error.log*
+
+# environment files (may contain secrets)
+.env
+.env.*
+!.env.example
+
+# production build
+/build

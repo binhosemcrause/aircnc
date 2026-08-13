@@ -1,5 +1,15 @@
 # Ignora as dependências do Node
 node_modules/
 
-# Ignora as alterações realizadas no Server.js por questões de segurança
-src/server.js
+# Ignora variáveis de ambiente (segredos, string de conexão do banco, etc.)
+.env
+.env.*
+!.env.example
+
+# Logs
+yarn-error.log
+npm-debug.log*
+
+# Uploads enviados pelos usuários (mantém apenas a pasta)
+uploads/*
+!uploads/.gitkeep

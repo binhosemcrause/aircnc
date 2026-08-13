@@ -3,6 +3,7 @@ import socketio from 'socket.io-client';
 import { Alert, SafeAreaView, ScrollView, StyleSheet, Image, AsyncStorage } from 'react-native';
 
 import SpotList from '../components/SpotList'
+import { API_URL } from '../config';
 
 import logo from '../assets/logo.png'
 
@@ -11,7 +12,7 @@ export default function List() {
 
     useEffect(() => {
         AsyncStorage.getItem('user').then(user_id => {
-            const socket = socketio('http://10.140.91.15:3333', {
+            const socket = socketio(API_URL, {
                 query: { user_id }
             })
 

@@ -1,0 +1,102 @@
+# One-command local test stack for AirCNC: MongoDB + backend + frontend + mobile (web).
+#
+# Usage:
+#   docker compose up --build
+#
+# Then open:
+#   http://localhost:3000   frontend (web)
+#   http://localhost:19006  mobile (Expo web preview - best effort, see mobile service below)
+#   http://localhost:3333   backend API
+#
+# No Node/Yarn install on the host is required - only Docker. Source directories are
+# bind-mounted for live reload, but node_modules always comes from the image (built with
+# --frozen-lockfile), so host/container platform mismatches (e.g. macOS vs Linux native
+# deps) are never an issue.
+#
+# Stop and remove everything (keeps the Mongo data volume):
+#   docker compose down
+# Also wipe the database:
+#   docker compose down -v
+
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      # mongo:27017 is the in-network hostname of the service above.
+      MONGO_URL: mongodb://mongo:27017/aircnc
+      PORT: 3333
+      # These two are handed back to browsers (thumbnail URLs, CORS), so they must be
+      # reachable from the host, not the Docker network - hence "localhost", not "backend".
+      APP_URL: http://localhost:3333
+      CORS_ORIGIN: http://localhost:3000,http://localhost:19006
+    ports:
+      - "3333:3333"
+    volumes:
+      - ./backend/src:/usr/src/app/src
+      - ./backend/uploads:/usr/src/app/uploads
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3333/spots"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      # Must be a URL the *browser* can reach (not the Docker network), hence localhost.
+      REACT_APP_API_URL: http://localhost:3333
+      REACT_APP_SOCKET_URL: http://localhost:3333
+      # webpack-dev-server's file watcher can miss bind-mount events on some Docker setups.
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/usr/src/app/src
+      - ./frontend/public:/usr/src/app/public
+
+  # Best effort: this is a 2019-era Expo SDK 35 / React Native 0.59 app. It was not
+  # upgraded (see project notes) because a full migration needs device/emulator testing
+  # to verify safely. Running it through `expo start --web` is the only piece of it that
+  # is realistically testable in a container - native iOS/Android via Expo Go is not,
+  # since a phone can't resolve this container's network.
+  #
+  # Known state: the container starts and serves on :19006, but the web bundle currently
+  # fails to compile (react-native-gesture-handler ships untranspiled JSX that the only
+  # still-installable expo-cli release, 6.3.10, no longer transpiles - its bundled
+  # webpack/babel tooling has drifted too far past what SDK 35 expects). That's a version-
+  # skew problem in an abandoned toolchain, not something fixable from Docker config.
+  # Comment this service out if you just want backend+frontend.
+  mobile:
+    build: ./mobile
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "19006:19006"
+    volumes:
+      - ./mobile/src:/usr/src/app/src
+      - ./mobile/App.js:/usr/src/app/App.js
+
+volumes:
+  mongo_data:
